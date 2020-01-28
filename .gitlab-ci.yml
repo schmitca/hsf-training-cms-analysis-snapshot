@@ -5,10 +5,6 @@ stages:
 
 image: rootproject/root-conda
 
-hello world:
-  script:
-    - echo "Hello World"
-
 build_skim:
   stage: build
   script:
