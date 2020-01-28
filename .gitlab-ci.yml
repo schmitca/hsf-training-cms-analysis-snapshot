@@ -27,7 +27,7 @@ skim_higgs:
     - pwd
     - ls
     - echo $SERVICE_PASS | kinit $CERN_USER@CERN.CH
-    - xrdcp root://eosuser.cern.ch//eos/user/m/meehan/APBootCampFeb20/GluGluToHToTauTau.root GluGluToHToTauTau.root
+    - xrdcp root://eosuser.cern.ch//eos/user/m/meehan/APBootCampFeb20/Skims/GluGluToHToTauTau.root GluGluToHToTauTau.root
     - ./skim GluGluToHToTauTau.root GluGluToHToTauTau_skimmed.root 19.6 11467.0 0.1 > log_higgs.txt
   artifacts:
     paths:
