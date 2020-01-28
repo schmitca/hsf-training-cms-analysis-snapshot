@@ -41,9 +41,26 @@ cutflow_higgs:
   script:
     - pwd
     - ls
-    - python parse_cutflow.py log_higgs.txt cutflow_GluGluToHToTauTau.txt
+    - python test_cutflow.py log_higgs.txt cutflow_GluGluToHToTauTau.txt
     
-
+    
+plot_higgs:
+  stage: plot
+  dependencies:
+    - skim_higgs
+  script:
+    - pwd
+    - ls
+    - python histograms.py GluGluToHToTauTau_skimmed.root ggH GluGluToHToTauTau_histograms.root
+    - mkdir plot_higgs_output
+    - python test_plot.py GluGluToHToTauTau_histograms.root plot_higgs_output 1.0
+  artifacts:
+    paths:
+    - plot_higgs_output
+    expire_in: 1 week
+    
+# write another job to pull a test histogram file from EOS and perform a shape comparison?
+    
     
 
 
