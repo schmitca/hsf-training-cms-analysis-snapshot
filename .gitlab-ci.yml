@@ -1,10 +1,16 @@
+stages:
+ - build
+ - run
+ - plot
+
 image: rootproject/root-conda
 
 hello world:
   script:
     - echo "Hello World"
 
-build:
+build_skim:
+  stage: build
   script:
     - pwd
     - echo ">>> Compile skimming executable ..." &&  \
@@ -17,11 +23,14 @@ build:
     expire_in: 1 week
     
 skim_higgs:
+  stage: run
+  dependencies: build_skim
   script:
     - pwd
     - ls
-    - echo $SERVICE_PASS | kinit $CERN_USER
+    - echo $SERVICE_PASS | kinit $CERN_USER@CERN.CH
     - xrdcp root://eosuser.cern.ch//eos/user/m/meehan/APBootCampFeb20/GluGluToHToTauTau.root GluGluToHToTauTau.root
+    - ./skim GluGluToHToTauTau.root GluGluToHToTauTau_skimmed.root 19.6 11467.0 0.1
     
 
 
