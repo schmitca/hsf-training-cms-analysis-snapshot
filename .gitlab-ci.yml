@@ -24,7 +24,8 @@ build_skim:
     
 skim_higgs:
   stage: run
-  dependencies: build_skim
+  dependencies: 
+    - build_skim
   script:
     - pwd
     - ls
