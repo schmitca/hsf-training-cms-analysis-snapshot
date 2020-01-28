@@ -1,0 +1,27 @@
+image: rootproject/root-conda
+
+hello world:
+  script:
+    - echo "Hello World"
+
+build:
+  script:
+    - pwd
+    - echo ">>> Compile skimming executable ..." &&  \
+    - COMPILER=$(root-config --cxx) &&  \
+    - FLAGS=$(root-config --cflags --libs) &&  \
+    - time $COMPILER -g -std=c++11 -O3 -Wall -Wextra -Wpedantic -o skim skim.cxx $FLAGS
+  artifacts:
+    paths:
+    - skim
+    expire_in: 1 week
+    
+skim_higgs:
+  script:
+    - pwd
+    - ls
+    - echo $SERVICE_PASS | kinit $CERN_USER
+    - xrdcp root://eosuser.cern.ch//eos/user/m/meehan/APBootCampFeb20/GluGluToHToTauTau.root GluGluToHToTauTau.root
+    
+
+
