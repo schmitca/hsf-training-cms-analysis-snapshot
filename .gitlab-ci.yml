@@ -48,6 +48,7 @@ plot_higgs:
   stage: plot
   dependencies:
     - skim_higgs
+  allow_failure: true
   script:
     - pwd
     - ls
