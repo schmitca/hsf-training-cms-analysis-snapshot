@@ -49,9 +49,9 @@ for i in range(len(cutflow)):
   match_flag = "SAME"
   if cutflow_benchmark[i][0]!=cutflow[i][0]:
     match_flag = "FAILURE cut name"
-  else if cutflow_benchmark[i][1]!=cutflow[i][1]:
+  elif cutflow_benchmark[i][1]!=cutflow[i][1]:
     match_flag = "FAILURE post cut yield"
-  else if cutflow_benchmark[i][2]!=cutflow[i][2]:
+  elif cutflow_benchmark[i][2]!=cutflow[i][2]:
     match_flag = "FAILURE pre cut yield"
   
   # print the benchmark numbers
