@@ -1,6 +1,7 @@
 stages:
  - build
  - run
+ - cutflow
  - plot
 
 image: rootproject/root-conda
@@ -27,7 +28,22 @@ skim_higgs:
     - ls
     - echo $SERVICE_PASS | kinit $CERN_USER@CERN.CH
     - xrdcp root://eosuser.cern.ch//eos/user/m/meehan/APBootCampFeb20/GluGluToHToTauTau.root GluGluToHToTauTau.root
-    - ./skim GluGluToHToTauTau.root GluGluToHToTauTau_skimmed.root 19.6 11467.0 0.1
+    - ./skim GluGluToHToTauTau.root GluGluToHToTauTau_skimmed.root 19.6 11467.0 0.1 > log_higgs.txt
+  artifacts:
+    paths:
+    - log_higgs.txt
+    expire_in: 1 week
+    
+cutflow_higgs:
+  stage: cutflow
+  dependencies:
+    - skim_higgs
+  script:
+    - pwd
+    - ls
+    - python parse_cutflow.py log_higgs.txt cutflow_GluGluToHToTauTau.txt
+    
+
     
 
 

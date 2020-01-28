@@ -1,0 +1,7 @@
+Passes_trigger               3402 47696  
+nMuon_>_0                    3402 3402   
+nTau_>_0                     3401 3402   
+Event_has_good_taus          846  3401   
+Event_has_good_muons         813  846    
+Valid_muon_in_selected_pair  813  813    
+Valid_tau_in_selected_pair   813  813    
