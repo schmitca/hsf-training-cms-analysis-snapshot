@@ -43,7 +43,6 @@ cutflow_higgs:
     - ls
     - python test_cutflow.py log_higgs.txt cutflow_GluGluToHToTauTau.txt
     
-    
 plot_higgs:
   stage: plot
   dependencies:
