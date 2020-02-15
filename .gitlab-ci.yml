@@ -1,63 +1,66 @@
 stages:
- - build
- - run
- - cutflow
- - plot
+  - build
+  - run
+  - plot
+  - test
 
-image: rootproject/root-conda
+.build_template:
+  stage: build
+  before_script:
+   - COMPILER=$(root-config --cxx)
+   - FLAGS=$(root-config --cflags --libs)
+  script:
+   - $COMPILER -g -O3 -Wall -Wextra -Wpedantic -o skim skim.cxx $FLAGS
+  artifacts:
+    paths:
+      - skim
+    expire_in: 1 day
 
 build_skim:
-  stage: build
-  script:
-    - pwd
-    - echo ">>> Compile skimming executable ..." &&  \
-    - COMPILER=$(root-config --cxx) &&  \
-    - FLAGS=$(root-config --cflags --libs) &&  \
-    - time $COMPILER -g -std=c++11 -O3 -Wall -Wextra -Wpedantic -o skim skim.cxx $FLAGS
-  artifacts:
-    paths:
-    - skim
-    expire_in: 1 week
-    
-skim_higgs:
+  extends: .build_template
+  image: rootproject/root-conda:6.18.04
+
+build_skim_latest:
+  extends: .build_template
+  image: rootproject/root-conda:latest
+  allow_failure: yes
+
+skim_ggH:
   stage: run
-  dependencies: 
+  dependencies:
     - build_skim
+  image: rootproject/root-conda:6.18.04
+  before_script:
+    - printf $SERVICE_PASS | base64 -d | kinit $CERN_USER@CERN.CH
   script:
-    - pwd
-    - ls
-    - echo $SERVICE_PASS | kinit $CERN_USER@CERN.CH
-    - xrdcp root://eosuser.cern.ch//eos/user/m/meehan/APBootCampFeb20/Skims/GluGluToHToTauTau.root GluGluToHToTauTau.root
-    - ./skim GluGluToHToTauTau.root GluGluToHToTauTau_skimmed.root 19.6 11467.0 0.1 > log_higgs.txt
+    - ./skim root://eosuser.cern.ch//eos/user/g/gstark/AwesomeWorkshopFeb2020/GluGluToHToTauTau.root skim_ggH.root 19.6 11467.0 0.1 > skim_ggH.log
   artifacts:
     paths:
-    - log_higgs.txt
+      - skim_ggH.root
+      - skim_ggH.log
     expire_in: 1 week
-    
-cutflow_higgs:
-  stage: cutflow
-  dependencies:
-    - skim_higgs
-  script:
-    - pwd
-    - ls
-    - python test_cutflow.py log_higgs.txt cutflow_GluGluToHToTauTau.txt
-    
-plot_higgs:
+
+plot_ggH:
   stage: plot
   dependencies:
-    - skim_higgs
-  allow_failure: true
+    - skim_ggH
+  image: rootproject/root-conda:6.18.04
   script:
-    - pwd
-    - ls
-    - python histograms.py GluGluToHToTauTau_skimmed.root ggH GluGluToHToTauTau_histograms.root
-    - mkdir plot_higgs_output
-    - python test_plot.py GluGluToHToTauTau_histograms.root plot_higgs_output 1.0
+    - python histograms.py skim_ggH.root ggH hist_ggH.root
   artifacts:
     paths:
-    - plot_higgs_output
+      - hist_ggH.root
     expire_in: 1 week
+
+test_ggH:
+  stage: test
+  dependencies:
+    - skim_ggH
+    - plot_ggH
+  image: rootproject/root-conda:6.18.04
+  script:
+    - python tests/test_cutflow_ggH.py
+    - python tests/test_plot_ggH.py
     
 # write another job to pull a test histogram file from EOS and perform a shape comparison?
     
