@@ -33,7 +33,7 @@ skim_ggH:
   before_script:
     - printf $SERVICE_PASS | base64 -d | kinit $CERN_USER@CERN.CH
   script:
-    - ./skim root://eosuser.cern.ch//eos/user/g/gstark/AwesomeWorkshopFeb2020/GluGluToHToTauTau.root skim_ggH.root 19.6 11467.0 0.1 > skim_ggH.log
+    - ./skim root://eospublic.cern.ch//eos/root-eos/HiggsTauTauReduced/GluGluToHToTauTau.root skim_ggH.root 19.6 11467.0 0.1 > skim_ggH.log
   artifacts:
     paths:
       - skim_ggH.root
