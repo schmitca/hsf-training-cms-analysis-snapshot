@@ -1,66 +1,46 @@
 stages:
- - build
- - run
- - cutflow
- - plot
+  - greeting
+  - build
+  - run
+  - plot
 
-image: rootproject/root-conda
+hello world:
+  stage: greeting
+  script:
+   - echo "Hello World"
+
+.build_template:
+  stage: build
+  before_script:
+   - COMPILER=$(root-config --cxx)
+   - FLAGS=$(root-config --cflags --libs)
+  script:
+   - $COMPILER -g -O3 -Wall -Wextra -Wpedantic -o skim skim.cxx $FLAGS
+  artifacts:
+    paths:
+      - skim
+    expire_in: 1 day
 
 build_skim:
-  stage: build
-  script:
-    - pwd
-    - echo ">>> Compile skimming executable ..." &&  \
-    - COMPILER=$(root-config --cxx) &&  \
-    - FLAGS=$(root-config --cflags --libs) &&  \
-    - time $COMPILER -g -std=c++11 -O3 -Wall -Wextra -Wpedantic -o skim skim.cxx $FLAGS
-  artifacts:
-    paths:
-    - skim
-    expire_in: 1 week
-    
-skim_higgs:
-  stage: run
-  dependencies: 
-    - build_skim
-  script:
-    - pwd
-    - ls
-    - echo $SERVICE_PASS | kinit $CERN_USER@CERN.CH
-    - xrdcp root://eosuser.cern.ch//eos/user/m/meehan/APBootCampFeb20/Skims/GluGluToHToTauTau.root GluGluToHToTauTau.root
-    - ./skim GluGluToHToTauTau.root GluGluToHToTauTau_skimmed.root 19.6 11467.0 0.1 > log_higgs.txt
-  artifacts:
-    paths:
-    - log_higgs.txt
-    expire_in: 1 week
-    
-cutflow_higgs:
-  stage: cutflow
-  dependencies:
-    - skim_higgs
-  script:
-    - pwd
-    - ls
-    - python test_cutflow.py log_higgs.txt cutflow_GluGluToHToTauTau.txt
-    
-plot_higgs:
-  stage: plot
-  dependencies:
-    - skim_higgs
-  allow_failure: true
-  script:
-    - pwd
-    - ls
-    - python histograms.py GluGluToHToTauTau_skimmed.root ggH GluGluToHToTauTau_histograms.root
-    - mkdir plot_higgs_output
-    - python test_plot.py GluGluToHToTauTau_histograms.root plot_higgs_output 1.0
-  artifacts:
-    paths:
-    - plot_higgs_output
-    expire_in: 1 week
-    
-# write another job to pull a test histogram file from EOS and perform a shape comparison?
-    
-    
+  extends: .build_template
+  image: rootproject/root-conda:6.18.04
 
+build_skim_latest:
+  extends: .build_template
+  image: rootproject/root-conda:latest
+  allow_failure: yes
+
+skim_ggH:
+  stage: run
+  dependencies:
+    - build_skim
+  image: rootproject/root-conda:6.18.04
+  before_script:
+    - printf $SERVICE_PASS | base64 -d | kinit $CERN_USER@CERN.CH
+  script:
+    - ./skim root://eosuser.cern.ch//eos/user/g/gstark/AwesomeWorkshopFeb2020/GluGluToHToTauTau.root skim_ggH.root 19.6 11467.0 0.1
+  artifacts:
+    paths:
+      - skim_ggH.root
+    expire_in: 1 week
 
