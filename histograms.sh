@@ -1,7 +1,11 @@
 #!/bin/bash
 
 INPUT_DIR=$1
+OUTPUT_DIR=$INPUT_DIR
+
+if [ $# -eq 2 ]; then
 OUTPUT_DIR=$2
+fi
 
 # Produce histograms from skimmed samples
 while IFS=, read -r SAMPLE PROCESS
