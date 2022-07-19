@@ -41,7 +41,7 @@ Install conda and ROOT following the instructions [here](https://indico.cern.ch/
 
 ## Preprocessing: Reducing the initial samples
 
-To reduce the inital samples to a fraction of the size, call the bash script `reduce.sh`, which processes all relevant samples with a constant reduction factor.
+To reduce the initial samples to a fraction of the size, call the bash script `reduce.sh`, which processes all relevant samples with a constant reduction factor.
 
 The already reduced samples are placed on a public EOS space here: `root://eospublic.cern.ch//eos/root-eos/HiggsTauTauReduced/`
 
@@ -58,7 +58,7 @@ The already reduced samples are placed on a public EOS space here: `root://eospu
 - [Plotting] Instant
 - [Fit] Almost instant
 
-Note that skimming and histogram production can be run seamlessly in multi-threading mode. I removed the feature for now so that we don't break any workflow later on (containe, ReANA, ...) but we could improve the runtime by a factor of around N (N being the number of threads used / physical cores).
+Note that skimming and histogram production can be run seamlessly in multi-threading mode. I removed the feature for now so that we don't break any workflow later on (container, ReANA, ...) but we could improve the runtime by a factor of around N (N being the number of threads used / physical cores).
 
 ## Step 1: Skimming
 
