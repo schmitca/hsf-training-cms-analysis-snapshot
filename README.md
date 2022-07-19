@@ -77,4 +77,3 @@ Finally, we make the physics results by combining the histograms. Run `bash plot
 
 ## Step 4: Fit
 Optionally, we can fit the cross-section of any process using the histograms also used for plotting. In the implemented example, we use the HistFactory of ROOT to fit the signal strength of the Z to two tau lepton process. Call `bash fit.sh /path/to/histograms.root /path/to/output/dir` to produce the PL fit.
-
